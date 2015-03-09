@@ -1,29 +1,11 @@
 var socket = io.connect('http://localhost:3000');
 socket.on('connect', function(data){
-  if(match.player1.name === null || match.player2.name === null) {
-    nickname = prompt("What's your name?");
-    if(match.player1.name === null){
-      //with whose go
-      socket.emit('join', nickname, true);
-    } else {
-      socket.emit('join', nickname, false);
-    }
-  } else {
-    alert('There are already two players!');
-  }  
+    var nickname = prompt("What's your name?");
+    socket.emit('join', nickname);
+    // alert('There are already two players!');
 });
-socket.on('join', function(name){
-  if(match.player1.name === null) {
-    match.player1.name = name;
-  } else {
-    if(match.player2.name === null) {
-      match.player2.name = name;
-    }
-  }
-});
-// socket.on('setName', function(nickname){
-//   match.player1.name 
-// });
+
+
 document.addEventListener('DOMContentLoaded', function(){
   var chatInput = document.getElementById("chat-input");
   chatInput.addEventListener('keypress', function(e){
@@ -118,15 +100,13 @@ document.addEventListener('DOMContentLoaded', function(){
       var toY = parseInt(document.querySelector('.to').id[3]);
       var from = [fromX, fromY];
       var to = [toX, toY];
-      var player = match.playerTurn['name'];
-      socket.emit('move', from, to, player);
+      socket.emit('move', from, to);
     } else {
       console.log('Need a start (blue) and end (green) destination')
     } 
   });
-  socket.on('move', function(from, to){
-    match.turn(from, to);
-      if(match.complete){
+  socket.on('move', function(from, to, successfulMove, message){
+      if(successfulMove){
         var piece = document.querySelector('.from').innerHTML;
         document.querySelector('.from').innerHTML = null;
         doClass('from', squares, removeClass);
@@ -137,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function(){
       } else {
         //
         var messageItem = document.createElement("li");
-        var textnode = document.createTextNode("Chessboard: " + match.message);
+        var textnode = document.createTextNode("Chessboard: " + message);
         messageItem.appendChild(textnode);
         messages.appendChild(messageItem);
         //

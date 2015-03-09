@@ -20,17 +20,23 @@ var board = ["----------",
             "-PPPPPPPP-",
             "-CHBQKBHC-",
             "----------"];
+var match = new chess.Match(board, {"-": chess.Edge, "P": chess.Pawn, "H": chess.Knight, "C": chess.Castle, 
+								"B": chess.Bishop, "Q": chess.Queen, "K": chess.King});
+console.log(match.toString());
 
 io.on('connection', function(client) {
 	console.log('Client connected');
-	var match = new chess.Match(board, {"-": chess.Edge, "P": chess.Pawn, "H": chess.Knight, "C": chess.Castle, 
-								"B": chess.Bishop, "Q": chess.Queen, "K": chess.King});
-	console.log(match.toString());
+	//set names when player joins
 	client.on('join', function(name, turn){
+		if(match.player1.name === null) {
+	    	match.player1.name = name;
+	  	} else {
+	    	if(match.player2.name === null) {
+	      		match.player2.name = name;
+	    	}
+	  	}
 		client.nickname = name;
-		client.broadcast.emit('join', name);
-		client.emit('join', name);
-		client.turn = turn;
+		console.log(match.player1.name + ' and ' + match.player2.name);
 	});
 	//exchange messages
 	client.on('messages', function(data){
@@ -47,16 +53,16 @@ io.on('connection', function(client) {
 		client.emit('highlight', fromSet, toSet, id);
 	});
 	//make the move
-	client.on('move', function(from, to, playerName){
-		if(playerName === client.nickname){
+	client.on('move', function(from, to) {
+		var playersTurn = match.player1.go ? match.player1.name : match.player2.name;
+		if(playersTurn === client.nickname){
+			match.turn(from, to);
 			console.log('from: ' + from + ' and to: ' + to);
-			client.broadcast.emit('move', from, to);
-			client.emit('move', from, to);
+			client.broadcast.emit('move', from, to, match.complete, match.message);
+			client.emit('move', from, to, match.complete, match.message);
 			
-		}
-		
+		}		
 	});
-	
 });
 
 server.listen(3000, function () {
