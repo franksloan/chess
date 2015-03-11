@@ -92,12 +92,16 @@
       </div>
     </div><!-- board-container -->
     <div class="chat-container">
+      <div id="users">
+        <div class="header">
+          <h3>Online</h3>
+        </div>
+      </div>
       <div id="messages">
         <div class="header">
           <h3>Messages</h3>
         </div>
         <ul id="message-list">
-          <li>After this</li>
         </ul>
       </div>
       <div id="write">
@@ -108,35 +112,6 @@
       </div>
     </div>
     <script src='/socket.io/socket.io.js'></script>
-    // <!-- <script src="js/chess.js"></script> -->
-    <script src="js/sendMoveToGame.js"></script>
-    // <!-- <script src="js/message.js"></script> -->
-    <script src="client.js">
-      // var socket = io.connect('http://localhost:3000');
-      // socket.on('connect', function(data){
-      //   nickname = prompt("What's your name?");
-      //   match.player1.name = nickname;
-      //   socket.emit('join', nickname);
-      // });
-      // document.addEventListener('DOMContentLoaded', function(){
-      //   var chatInput = document.getElementById("chat-input");
-      //   chatInput.addEventListener('keypress', function(e){
-      //     if(e.keyCode === 13) {
-      //       var message = chatInput.value;
-      //       // var message = document.createTextNode(chatInput.value);
-      //       // console.log(message);
-      //       socket.emit('messages', message);
-      //       chatInput.value = ''; 
-      //     }
-      //   });
-      //   socket.on('messages', function(data){
-      //     var messages = document.getElementById("message-list");
-      //     var messageItem = document.createElement("li");
-      //     var mes = document.createTextNode(data);
-      //     messageItem.appendChild(mes);
-      //     messages.appendChild(messageItem);
-      //   });
-      // });
-    </script>
+    <script src="js/client.js"></script>
   </body>
 </html>

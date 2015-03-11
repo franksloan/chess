@@ -1,4 +1,7 @@
 /*Main sections*/
+.container {
+
+}
 .board-container {
 	text-align: center;
 	padding: 2vh;
@@ -55,27 +58,35 @@ button {
 /*END - Chess game*/
 
 /*Chat*/
+#users {
+	padding-bottom: 2vw;
+	height: 12vw;
+}
+
 #messages {
-	padding-bottom: 16px;
-	height: 32vw;
+	padding-bottom: 2vw;
+	height: 20vw;
 }
 #write {
-	padding-top: 8px;
-	height: 16vw;
+	height: 6vw;
 	/*border-top-style: solid;
 	border-color: black;
 	border-width: 2px;*/
 }
 .header {
-	height: 25px;
+	height: 24px;
 	border-bottom-style: solid;
 	border-color: black;
 	border-width: 2px;
 }
+.header h3 {
+	margin-top: 0px;
+}
+
 #chat-input {
-	margin-top: 5px;
+	margin-top: 10px;
 	padding: 5px;
-	width: inherit;
+	width: 90%;
 }
 #message-list {
 	padding-left: 0;

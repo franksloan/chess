@@ -5,6 +5,13 @@ socket.on('connect', function(data){
     // alert('There are already two players!');
 });
 
+function appendMessage(name, message){
+    var messages = document.getElementById("message-list");
+    var messageItem = document.createElement("li");
+    var textnode = document.createTextNode(name + ": " + message);
+    messageItem.appendChild(textnode);
+    messages.appendChild(messageItem);
+};
 
 document.addEventListener('DOMContentLoaded', function(){
   var chatInput = document.getElementById("chat-input");
@@ -17,12 +24,8 @@ document.addEventListener('DOMContentLoaded', function(){
       chatInput.value = ''; 
     }
   });
-  socket.on('messages', function(data){
-    var messages = document.getElementById("message-list");
-    var messageItem = document.createElement("li");
-    var mes = document.createTextNode(data);
-    messageItem.appendChild(mes);
-    messages.appendChild(messageItem);
+  socket.on('messages', function(name, message){
+    appendMessage(name, message);
   });
 
   var button = document.querySelector("button");
@@ -105,7 +108,8 @@ document.addEventListener('DOMContentLoaded', function(){
       console.log('Need a start (blue) and end (green) destination')
     } 
   });
-  socket.on('move', function(from, to, successfulMove, message){
+    
+  socket.on('move', function(from, to, successfulMove, message, name){
       if(successfulMove){
         var piece = document.querySelector('.from').innerHTML;
         document.querySelector('.from').innerHTML = null;
@@ -114,12 +118,12 @@ document.addEventListener('DOMContentLoaded', function(){
         document.querySelector('.to').innerHTML = piece;
         doClass('to', squares, removeClass);
         toSet = false;
+        if(message !== '') {
+          appendMessage('Chessboard', message + ' by ' + name);
+        }
       } else {
         //
-        var messageItem = document.createElement("li");
-        var textnode = document.createTextNode("Chessboard: " + message);
-        messageItem.appendChild(textnode);
-        messages.appendChild(messageItem);
+        appendMessage('Chessboard', message);
         //
       }
   });
