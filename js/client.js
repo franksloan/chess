@@ -4,13 +4,25 @@ socket.on('connect', function(data){
     socket.emit('join', nickname);
     // alert('There are already two players!');
 });
+//add a player on on screen list
 socket.on('online', function(name){
     appendToList('', 'online-list', name);
     var user = document.getElementById(name);
     user.innerHTML = '<button class="online-button">' + name + '</button>';
     user.addEventListener('click', function(){
-      console.log(user.parentNode.Id);
+      var player2 = user.id;
+      //ask the player you click on for a game
+      socket.emit('request game', player2);
+      console.log(user.id);
     });
+});
+//receive a request for a game
+socket.on('game requested', function(player1){
+  var newGame = confirm("Do you want a game against " + player1 + "?");
+  socket.emit('start game', newGame, player1);
+});
+socket.on('works', function(stupid){
+  console.log(stupid);
 });
 socket.on('remove player', function(name){
     var listItem = document.getElementById(name);
@@ -20,7 +32,6 @@ function appendToList(listText, list, id){
     var list = document.getElementById(list);
     var listItem = document.createElement("li");
     listItem.setAttribute('id', id || '');
-    console.log(listItem);
     var textnode = document.createTextNode(listText);
     listItem.appendChild(textnode);
     list.appendChild(listItem);
@@ -107,7 +118,8 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
   });
-  button.addEventListener('click', function(){
+  var submitMove = document.querySelector('.submit-move');
+  submitMove.addEventListener('click', function(){
     if(fromSet && toSet){
       var fromX = parseInt(document.querySelector('.from').id[1]);
       var fromY = parseInt(document.querySelector('.from').id[3]);

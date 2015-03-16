@@ -13,7 +13,12 @@
 	float: left;
 	width: 60%;
 }
-
+.chessboard {
+	display: none;
+}
+.initial {
+	
+}
 /*.chat-container {
 	text-align: left;
 	display: inline-block;

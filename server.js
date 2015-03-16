@@ -24,25 +24,32 @@ var board = ["----------",
             "----------"];
 
 var match = new chess.Match(board);
-// redisCli.smembers('names', function(err, names){
-// 	names.forEach(function(name){
-// 		redisCli.srem('names', name);
-// 		console.log(name);
-// 	});
-// 	console.log('Nothing left');
-// });
+redisCli.smembers('names', function(err, names){
+	names.forEach(function(name){
+		redisCli.srem('names', name);
+		console.log(name);
+	});
+	console.log('Nothing left');
+});
+var rooms = {};
+var clients = {};
+var num = 1;
 io.on('connection', function(client) {
-	console.log('Client connected');
+	console.log('Client connected ' + num);
+	num++;
 	//set names when player joins
-	client.on('join', function(name, turn){
-		if(match.player1.name === null) {
-	    	match.player1.name = name;
-	  	} else {
-	    	if(match.player2.name === null) {
-	      		match.player2.name = name;
-	    	}
-	  	}
+	client.on('join', function(name){
+		 // if(match.player1.name === null) {
+		 //    	match.player1.name = name;
+		 //  	} else {
+		 //    	if(match.player2.name === null) {
+		 //      		match.player2.name = name;
+		 //    	}
+		 //  	}
+	 	//add to clients object
 		client.name = name;
+		clients[name] = client;
+	 	// console.log(io.sockets.connected);
 		client.broadcast.emit('online', name);
 		redisCli.sadd('names', name);
 		redisCli.smembers('names', function(err, names){
@@ -58,6 +65,23 @@ io.on('connection', function(client) {
 		redisCli.srem('names', name);
 		client.broadcast.emit('remove player', name);
 	});
+	client.on('request game', function(player2){
+		var player1 = client.name;
+		// rooms[name.toLowerCase() + 'VS' + opponent.toLowerCase()] = 'hi';
+		// io.sockets.connected[clients.opponent].emit('request opponent', name);
+		clients[player2].emit('game requested', player1);
+	})
+	client.on('start game', function(newGame, player1){
+		var player2 = client.name;
+		if(newGame){
+			rooms[player1.toLowerCase() + 'VS' + player2.toLowerCase()] = 'hi';
+			client.join('this room');
+			clients[player1].join('this room');
+			var stupid = 'wahhhhhhooooo';
+			io.to('this room').emit('works', stupid);
+		}
+		console.log(rooms);
+	})
 	//exchange messages
 	client.on('messages', function(data){
 		var name = client.name;
