@@ -1,6 +1,10 @@
 /*Main sections*/
-.container {
-
+.container-fluid {
+	padding-top: 20px;
+	padding-right: 25px;
+}
+.well {
+	float: right;
 }
 .board-container {
 	text-align: center;
@@ -10,7 +14,7 @@
 	width: 60%;
 }
 
-.chat-container {
+/*.chat-container {
 	text-align: left;
 	display: inline-block;
 	float: right;
@@ -19,7 +23,7 @@
 	border-width: 2px;
 	border-color: black;
 	width: 30%;
-}
+}*/
 /*END - Main sections*/
 
 /*Chess Game*/
@@ -49,6 +53,7 @@
 
 img {
 	height: 5vw;
+	vertical-align: text-bottom;
 	/*padding-top: 1vw;*/
 }
 
@@ -62,6 +67,13 @@ button {
 	padding-bottom: 2vw;
 	height: 12vw;
 }
+#online-list {
+	padding-top: 5px;
+	padding-left: 0;
+}
+#online-list li {
+	list-style: none;
+}
 
 #messages {
 	padding-bottom: 2vw;
@@ -69,9 +81,6 @@ button {
 }
 #write {
 	height: 6vw;
-	/*border-top-style: solid;
-	border-color: black;
-	border-width: 2px;*/
 }
 .header {
 	height: 24px;
@@ -85,10 +94,11 @@ button {
 
 #chat-input {
 	margin-top: 10px;
-	padding: 5px;
-	width: 90%;
+	padding: 2px;
+	width: 100%;
 }
 #message-list {
+	padding-top: 5px;
 	padding-left: 0;
 }
 #message-list li {

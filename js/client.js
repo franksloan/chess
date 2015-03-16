@@ -4,13 +4,26 @@ socket.on('connect', function(data){
     socket.emit('join', nickname);
     // alert('There are already two players!');
 });
-
-function appendMessage(name, message){
-    var messages = document.getElementById("message-list");
-    var messageItem = document.createElement("li");
-    var textnode = document.createTextNode(name + ": " + message);
-    messageItem.appendChild(textnode);
-    messages.appendChild(messageItem);
+socket.on('online', function(name){
+    appendToList('', 'online-list', name);
+    var user = document.getElementById(name);
+    user.innerHTML = '<button class="online-button">' + name + '</button>';
+    user.addEventListener('click', function(){
+      console.log(user.parentNode.Id);
+    });
+});
+socket.on('remove player', function(name){
+    var listItem = document.getElementById(name);
+    listItem.parentNode.removeChild(listItem); 
+});
+function appendToList(listText, list, id){
+    var list = document.getElementById(list);
+    var listItem = document.createElement("li");
+    listItem.setAttribute('id', id || '');
+    console.log(listItem);
+    var textnode = document.createTextNode(listText);
+    listItem.appendChild(textnode);
+    list.appendChild(listItem);
 };
 
 document.addEventListener('DOMContentLoaded', function(){
@@ -25,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   });
   socket.on('messages', function(name, message){
-    appendMessage(name, message);
+    appendToList(name + ': ' + message, 'message-list');
   });
 
   var button = document.querySelector("button");
@@ -45,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function(){
   var fromSet = false;
   var toSet = false;
   for(var i = 0; i < squares.length; i++) {
-    console.log('enough');
     squares[i].addEventListener('click', function(){
       if(this.className.search('from') >= 0) {
         //fromSet to false
@@ -119,11 +131,11 @@ document.addEventListener('DOMContentLoaded', function(){
         doClass('to', squares, removeClass);
         toSet = false;
         if(message !== '') {
-          appendMessage('Chessboard', message + ' by ' + name);
+          appendToList('Chessboard: ' + message + ' by ' + name, 'message-list');
         }
       } else {
-        //
-        appendMessage('Chessboard', message);
+        //name + ": " + message
+        appendToList('Chessboard: ' + message, 'message-list');
         //
       }
   });
