@@ -9,10 +9,10 @@
   <body>
     <div class="container-fluid">
       <div class="board-container col-md-8">
-        <div class="initial">
+        <div id="initial">
           <h2>Choose a player on right hand side to request a game against</h2>
         </div>
-        <div class="chessboard">
+        <div id="chessboard">
           <div class="row">
             <div class="square white" id='[1,1]'><img data-piece='C' src='css/blackCastle.svg'></div>
             <div class="square black" id='[2,1]'><img data-piece='H' src='css/blackHorse.svg'></div>
@@ -119,7 +119,12 @@
             <div class="header">
               <h4>Write something here</h4>
             </div>
-            <input type="text" id="chat-input"></input>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <input type="radio" aria-label="..." id="to-opponent-only">
+              </span>
+              <input type="text" class="form-control" id="chat-input" aria-label="..."></input>
+            </div>
           </div>
         <!-- </div> -->
       </div>

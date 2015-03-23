@@ -1,29 +1,44 @@
 var socket = io.connect('http://localhost:3000');
 socket.on('connect', function(data){
-  if(match.player1.name === null || match.player2.name === null) {
-    nickname = prompt("What's your name?");
-    if(match.player1.name === null){
-      //with whose go
-      socket.emit('join', nickname, true);
-    } else {
-      socket.emit('join', nickname, false);
-    }
-  } else {
-    alert('There are already two players!');
-  }  
+    var nickname = prompt("What's your name?");
+    socket.emit('join', nickname);
 });
-socket.on('join', function(name){
-  if(match.player1.name === null) {
-    match.player1.name = name;
-  } else {
-    if(match.player2.name === null) {
-      match.player2.name = name;
-    }
-  }
+//add a player to on screen list
+socket.on('online', function(name){
+    appendToList('', 'online-list', name);
+    var user = document.getElementById(name);
+    user.innerHTML = '<button type="button" class="btn btn-primary btn-sm">' + name + '</button>';
+    user.addEventListener('click', function(){
+      var player2 = user.id;
+      //ask the player you click on for a game
+      socket.emit('request game', player2);
+    });
 });
-// socket.on('setName', function(nickname){
-//   match.player1.name 
-// });
+//receive a request for a game
+socket.on('game requested', function(player1){
+  var newGame = confirm("Do you want a game against " + player1 + "?");
+  socket.emit('start game', newGame, player1);
+});
+socket.on('initialise board', function(){
+  var initialScreen = document.getElementById('initial');
+  initialScreen.style.display = 'none';
+  var gameScreen = document.getElementById('chessboard');
+  gameScreen.style.display = 'inline-block';
+  document.getElementById('to-opponent-only').disabled = false;
+});
+socket.on('remove player', function(name){
+    var listItem = document.getElementById(name);
+    listItem.parentNode.removeChild(listItem); 
+});
+function appendToList(listText, list, id){
+    var list = document.getElementById(list);
+    var listItem = document.createElement("li");
+    listItem.setAttribute('id', id || '');
+    var textnode = document.createTextNode(listText);
+    listItem.appendChild(textnode);
+    list.appendChild(listItem);
+};
+
 document.addEventListener('DOMContentLoaded', function(){
   var chatInput = document.getElementById("chat-input");
   chatInput.addEventListener('keypress', function(e){
@@ -31,18 +46,19 @@ document.addEventListener('DOMContentLoaded', function(){
       var message = chatInput.value;
       // var message = document.createTextNode(chatInput.value);
       // console.log(message);
-      socket.emit('messages', message);
+      if(document.getElementById('to-opponent-only').checked) {
+        socket.emit('messages', message, true);
+      } else {
+        socket.emit('messages', message, false);
+      }
+      
       chatInput.value = ''; 
     }
   });
-  socket.on('messages', function(data){
-    var messages = document.getElementById("message-list");
-    var messageItem = document.createElement("li");
-    var mes = document.createTextNode(data);
-    messageItem.appendChild(mes);
-    messages.appendChild(messageItem);
+  socket.on('messages', function(name, message){
+    appendToList(name + ': ' + message, 'message-list');
   });
-
+  document.getElementById('to-opponent-only').disabled = true;
   var button = document.querySelector("button");
   var squares = document.querySelectorAll("div .square");
   //message list in chat
@@ -60,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function(){
   var fromSet = false;
   var toSet = false;
   for(var i = 0; i < squares.length; i++) {
-    console.log('enough');
     squares[i].addEventListener('click', function(){
       if(this.className.search('from') >= 0) {
         //fromSet to false
@@ -110,7 +125,8 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
   });
-  button.addEventListener('click', function(){
+  var submitMove = document.querySelector('.submit-move');
+  submitMove.addEventListener('click', function(){
     if(fromSet && toSet){
       var fromX = parseInt(document.querySelector('.from').id[1]);
       var fromY = parseInt(document.querySelector('.from').id[3]);
@@ -118,15 +134,14 @@ document.addEventListener('DOMContentLoaded', function(){
       var toY = parseInt(document.querySelector('.to').id[3]);
       var from = [fromX, fromY];
       var to = [toX, toY];
-      var player = match.playerTurn['name'];
-      socket.emit('move', from, to, player);
+      socket.emit('move', from, to);
     } else {
       console.log('Need a start (blue) and end (green) destination')
     } 
   });
-  socket.on('move', function(from, to){
-    match.turn(from, to);
-      if(match.complete){
+    
+  socket.on('move', function(from, to, successfulMove, message, name){
+      if(successfulMove){
         var piece = document.querySelector('.from').innerHTML;
         document.querySelector('.from').innerHTML = null;
         doClass('from', squares, removeClass);
@@ -134,13 +149,11 @@ document.addEventListener('DOMContentLoaded', function(){
         document.querySelector('.to').innerHTML = piece;
         doClass('to', squares, removeClass);
         toSet = false;
+        if(message !== '') {
+          appendToList('Chessboard: ' + message + ' by ' + name, 'message-list');
+        }
       } else {
-        //
-        var messageItem = document.createElement("li");
-        var textnode = document.createTextNode("Chessboard: " + match.message);
-        messageItem.appendChild(textnode);
-        messages.appendChild(messageItem);
-        //
+        appendToList('Chessboard: ' + message, 'message-list');
       }
   });
 });

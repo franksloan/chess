@@ -1,0 +1,34 @@
+{
+  "name": "chess",
+  "version": "0.0.0",
+  "description": "Real time chess app",
+  "main": "server.js",
+  "dependencies": {
+    "bootstrap": "^3.3.2",
+    "express": "^4.12.2",
+    "path": "^0.11.14",
+    "redis": "^0.12.1",
+    "socket.io": "^1.3.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/franksloan/chess.git"
+  },
+  "keywords": [
+    "chess",
+    "socket",
+    "socket.io",
+    "node"
+  ],
+  "author": "Frank Sloan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franksloan/chess/issues"
+  },
+  "homepage": "https://github.com/franksloan/chess"
+}

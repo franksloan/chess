@@ -13,10 +13,10 @@
 	float: left;
 	width: 60%;
 }
-.chessboard {
+#chessboard {
 	display: none;
 }
-.initial {
+#initial {
 	
 }
 /*.chat-container {
@@ -97,7 +97,7 @@ button {
 	margin-top: 0px;
 }
 
-#chat-input {
+.input-group {
 	margin-top: 10px;
 	padding: 2px;
 	width: 100%;
