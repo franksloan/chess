@@ -60,6 +60,8 @@ img {
 	height: 5vw;
 	vertical-align: text-bottom;
 	/*padding-top: 1vw;*/
+	z-index: 100;
+	position: relative;
 }
 
 button {

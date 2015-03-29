@@ -1,10 +1,5 @@
-// var io = require('socket.io')(server);
 var chess = require('./chess');
 var chessRooms = require('./rooms');
-// var express = require('express');
-// var app = express();
-// var server = require('http').createServer(app);
-// var io = require('socket.io')(server);
 var redis = require('redis');
 var redisCli = redis.createClient();
 var chess = require('./chess');
@@ -131,5 +126,18 @@ module.exports.socketListen = function(io){
 				clients[player2].emit('move', null, null, false, message, null);
 			}	
 		});
+		
+  		client.on('receive position', function (data, revert) {
+     		lastPosition = data;
+     		client.broadcast.emit('update position', data, revert); // send `data` to all other clients
+  		});
+  		client.on('highlight2', function (classHighlight, self, remove) {
+  			console.log(self + ' and ' + remove);
+     		client.broadcast.emit('highlight2', classHighlight, self, remove); // send `data` to all other clients
+  		});
+  		client.on('move piece', function(fromId, toId){
+  			client.emit('move piece', fromId, toId);
+  			client.broadcast.emit('move piece', fromId, toId);
+  		})
 	});
 };
