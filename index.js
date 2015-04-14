@@ -3,7 +3,7 @@ var app = express();
 var server = require('http').createServer(app);
 // var server = app.listen(5000);
 var io = require('socket.io')(server);
-var sockets = require('./server/sockets').socketListen(io);
+var sockets = require('./Server/sockets').socketListen(io);
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/client'));
