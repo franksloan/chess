@@ -73,6 +73,15 @@ button {
 #users {
 	padding-bottom: 2vw;
 	height: 12vw;
+	margin-bottom: 30px;
+}
+#user-cont {
+	overflow: auto;
+	height: inherit;
+}
+#message-cont {
+	overflow: auto;
+	height: inherit;
 }
 #online-list {
 	padding-top: 5px;
@@ -85,6 +94,7 @@ button {
 #messages {
 	padding-bottom: 2vw;
 	height: 20vw;
+	margin-bottom: 30px;
 }
 #write {
 	height: 6vw;

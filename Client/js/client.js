@@ -2,7 +2,7 @@ $(document).ready(function(){
   var pieceIds = [];
   var targets = [];
   var toSet = false;
-  var socket = io.connect('http://localhost:3000');
+  var socket = io.connect('http://localhost:5000');
   var chatInput = document.getElementById("chat-input");
   var submitMove = $('.submit-move');
   document.getElementById('to-opponent-only').disabled = true;
@@ -109,7 +109,10 @@ $(document).ready(function(){
       }
     });
   };
-
+  function updateScroll(id){
+    var element = document.getElementById(id);
+    element.scrollTop = element.scrollHeight;
+  }
   //message list in chat
   submitMove.click(function(){
     if(toSet){
@@ -161,6 +164,7 @@ $(document).ready(function(){
   });
   socket.on('messages', function(name, message){
     appendToList(name + ': ' + message, 'message-list');
+    updateScroll('message-cont');
   });
   //receive a request for a game
   socket.on('game requested', function(player1){
@@ -257,9 +261,11 @@ $(document).ready(function(){
       
       if(message !== '') {
         appendToList('Chessboard: ' + message + ' by ' + name, 'message-list');
+        updateScroll('message-cont');
       }
     } else {
       appendToList('Chessboard: ' + message, 'message-list');
+      updateScroll('message-cont');
     }
   });
 });
