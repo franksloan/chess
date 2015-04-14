@@ -6,7 +6,7 @@ var io = require('socket.io')(server);
 var sockets = require('./Server/sockets').socketListen(io);
 
 app.set('port', (process.env.PORT || 5000));
-app.use(express.static(__dirname + '/client'));
+app.use(express.static(__dirname + '/Client'));
 app.get('/', function(req, res) {
   // res.render('/index.html');
   res.sendFile('/index.html');
