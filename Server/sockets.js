@@ -67,8 +67,8 @@ module.exports.socketListen = function(io){
 				var p1Pieces = chessPieceIds.player1;
 				var p2Pieces = chessPieceIds.player2;
 				function initialiseBoard(playersTurn, otherPlayer){
-					clients[playersTurn].emit('initialise board', p1Pieces, true);
-					clients[otherPlayer].emit('initialise board', p2Pieces, false);
+					clients[playersTurn].emit('initialise board', p1Pieces, true, player1, player2);
+					clients[otherPlayer].emit('initialise board', p2Pieces, false, player1, player2);
 				}
 				toRoom(initialiseBoard);
 			}

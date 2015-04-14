@@ -175,7 +175,14 @@ $(document).ready(function(){
   ////////////
   //GAMEPLAY//
   ////////////
-  socket.on('initialise board', function(playersPieces, clientsTurn){
+  socket.on('initialise board', function(playersPieces, clientsTurn, player1, player2){
+    //put player buttons in respective colours
+    var player1Button = $('#' + player1 + ' .btn');
+    var player2Button = $('#' + player2 + ' .btn');
+    player1Button.removeClass('btn-primary');
+    player2Button.removeClass('btn-primary');
+    player1Button.addClass('btn-black');
+    player2Button.addClass('btn-white');
     //show chessboard to players
     var initialScreen = $('#initial');
     initialScreen.css('display', 'none');
@@ -235,6 +242,13 @@ $(document).ready(function(){
   //complete move if valid
   socket.on('move', function(fromId, toId, successfulMove, message, name, clientsTurn){
     if(successfulMove){
+      //flash submit button green if successful move
+      $('.submit-move').removeClass('btn-default');
+      $('.submit-move').addClass('btn-success');
+      setTimeout(function() {
+        $('.submit-move').removeClass('btn-success');
+        $('.submit-move').addClass('btn-default');
+      }, 1000);
       var piece = $('.from');
       var pieceId = $("#" + fromId + ' > img').attr('id');
       $('#' + pieceId).css('top', 0);
@@ -265,6 +279,13 @@ $(document).ready(function(){
         updateScroll('message-cont');
       }
     } else {
+      //flash submit button red if invalid move
+      $('.submit-move').removeClass('btn-default');
+      $('.submit-move').addClass('btn-danger');
+      setTimeout(function() {
+        $('.submit-move').removeClass('btn-danger');
+        $('.submit-move').addClass('btn-default');
+      }, 1000);
       appendToList('Chessboard: ' + message, 'message-list');
       updateScroll('message-cont');
     }
