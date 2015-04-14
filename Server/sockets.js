@@ -1,19 +1,20 @@
-var redis = require('redis');
-var redisCli = redis.createClient();
+// var redis = require('redis');
+// var redisCli = redis.createClient();
 var chess = require('./chess');
 var chessRoom = require('./rooms');
 var chessPieceIds = require('./chessPieceIds');
 var rooms = {};
 var clients = {};
 var num = 1;
+var online = [];
 
-redisCli.smembers('names', function(err, names){
-	names.forEach(function(name){
-		redisCli.srem('names', name);
-		console.log(name);
-	});
-	console.log('Nothing left');
-});
+// redisCli.smembers('names', function(err, names){
+// 	names.forEach(function(name){
+// 		redisCli.srem('names', name);
+// 		console.log(name);
+// 	});
+// 	console.log('Nothing left');
+// });
 module.exports.socketListen = function(io){ 
 	io.on('connection', function(client) {
 		console.log('Client connected ' + num);
@@ -24,17 +25,23 @@ module.exports.socketListen = function(io){
 			client.name = name;
 			clients[name] = client;
 			client.broadcast.emit('online', name);
-			redisCli.sadd('names', name);
-			redisCli.smembers('names', function(err, names){
-				names.forEach(function(name){
+			online.push(name);
+			// redisCli.sadd('names', name);
+			online.forEach(function(name){
 					client.emit('online', name);
-				});
 			});
+			// redisCli.smembers('names', function(err, names){
+			// 	names.forEach(function(name){
+			// 		client.emit('online', name);
+			// 	});
+			// });
 		});
 		client.on('disconnect', function(){
 			var name = client.name;
 			console.log('Client disconnect ' + name);
-			redisCli.srem('names', name);
+			var remUser = online.indexOf(name);
+			online.splice(remUser, 1);
+			// redisCli.srem('names', name);
 			client.broadcast.emit('remove player', name);
 		});
 		client.on('request game', function(player2){

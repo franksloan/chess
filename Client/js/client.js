@@ -2,7 +2,8 @@ $(document).ready(function(){
   var pieceIds = [];
   var targets = [];
   var toSet = false;
-  var socket = io.connect('http://localhost:5000');
+  // var socket = io.connect('http://localhost:5000');
+  var socket = io.connect();
   var chatInput = document.getElementById("chat-input");
   var submitMove = $('.submit-move');
   document.getElementById('to-opponent-only').disabled = true;
