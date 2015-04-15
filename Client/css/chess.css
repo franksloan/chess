@@ -55,8 +55,10 @@
 .square.to {
 	background-color: #5cb85c;
 }
-.square.taken {
-	background-color: #d9534f;
+
+.submit-move {
+	border-width: 2px;
+	border-color: #222;
 }
 
 img {

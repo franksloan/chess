@@ -103,8 +103,8 @@ module.exports.socketListen = function(io){
 					//has the move completed and what validation messages are there
 					var message = match.message;
 					var moveComplete = match.complete;
-					clients[playersTurn].emit('move', fromId, toId, moveComplete, message, playersTurn, false);
-					clients[otherPlayer].emit('move', fromId, toId, moveComplete, message, playersTurn, true);
+					clients[playersTurn].emit('move', fromId, toId, moveComplete, message, playersTurn, otherPlayer, false);
+					clients[otherPlayer].emit('move', fromId, toId, moveComplete, message, playersTurn, otherPlayer, true);
 				} else {
 					var message = "It is " + playersTurn + "'s turn, calm down and wait!";
 					clients[playersTurn].emit('move', null, null, false, message, null);

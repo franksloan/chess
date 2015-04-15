@@ -183,6 +183,8 @@ $(document).ready(function(){
     player2Button.removeClass('btn-primary');
     player1Button.addClass('btn-black');
     player2Button.addClass('btn-white');
+    var submitButton = $('.submit-move');
+    submitMove.text('Submit Move ' + player1);
     //show chessboard to players
     var initialScreen = $('#initial');
     initialScreen.css('display', 'none');
@@ -240,7 +242,7 @@ $(document).ready(function(){
     }
   });
   //complete move if valid
-  socket.on('move', function(fromId, toId, successfulMove, message, name, clientsTurn){
+  socket.on('move', function(fromId, toId, successfulMove, message, name, nextPlayer, clientsTurn){
     if(successfulMove){
       //flash submit button green if successful move
       $('.submit-move').removeClass('btn-default');
@@ -248,6 +250,7 @@ $(document).ready(function(){
       setTimeout(function() {
         $('.submit-move').removeClass('btn-success');
         $('.submit-move').addClass('btn-default');
+        $('.submit-move').text('Submit Move ' + nextPlayer);
       }, 1000);
       var piece = $('.from');
       var pieceId = $("#" + fromId + ' > img').attr('id');
