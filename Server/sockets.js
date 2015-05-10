@@ -11,7 +11,7 @@ var online = [];
 //analytics tool
 var GoSquared = require('gosquared');
 var gosquared = new GoSquared({
-	site_token: 'GSN-123456-A',
+	site_token: 'GSN-780521-C',
 	api_key: '2HRWV7CDXR2ODODV'
 });
 
