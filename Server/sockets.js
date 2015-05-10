@@ -12,7 +12,7 @@ var online = [];
 var GoSquared = require('gosquared');
 var gosquared = new GoSquared({
 	site_token: 'GSN-123456-A',
-	api_key: 'demo'
+	api_key: '2HRWV7CDXR2ODODV'
 });
 
 // redisCli.smembers('names', function(err, names){
