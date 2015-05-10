@@ -8,6 +8,13 @@ var clients = {};
 var num = 1;
 var online = [];
 
+//analytics tool
+var GoSquared = require('gosquared');
+var gosquared = new GoSquared({
+	site_token: 'GSN-123456-A',
+	api_key: 'demo'
+});
+
 // redisCli.smembers('names', function(err, names){
 // 	names.forEach(function(name){
 // 		redisCli.srem('names', name);
@@ -52,6 +59,11 @@ module.exports.socketListen = function(io){
 			var player2 = client.name;
 			if(newGame){
 				var roomName = player1 + ' vs ' + player2;
+				gosquared.trackEvent('New Game started', {
+					room: roomName,
+				}, function(err, resp){
+					console.log(resp);
+				});
 				//set the name of the game room being created for the opponents
 				clients[player1].room = roomName;
 				clients[player2].room = roomName;
@@ -79,6 +91,12 @@ module.exports.socketListen = function(io){
 				clients[playersTurn].emit('messages', clientName, message);
 				clients[otherPlayer].emit('messages', clientName, message);
 			};
+			//message analytics
+			gosquared.trackEvent('Someone chatting', {
+					message: message,
+				}, function(err, resp){
+					console.log(resp);
+			});
 			//send messages to opponent only or everyone online
 			if(toOpponentOnly){
 				toRoom(messageOpponent);

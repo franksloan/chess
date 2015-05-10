@@ -144,8 +144,7 @@ $(document).ready(function(){
   socket.on('connect', function(data){
       var nickname = prompt("What's your name?");
       _gs('event', 'Someone joined', {
-        extra: nickname,
-        details: true
+        name: nickname
       });
       socket.emit('join', nickname);
   });
