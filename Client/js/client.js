@@ -293,4 +293,10 @@ $(document).ready(function(){
       updateScroll('message-cont');
     }
   });
+  
+
+  //goSquared analytics
+  $('li').on('click', function() {
+    _gs('event', 'Clicked my button');
+  });
 });
