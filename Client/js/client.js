@@ -297,6 +297,11 @@ $(document).ready(function(){
 
   //goSquared analytics
   $('li').on('click', function() {
+    console.log('clicked here')
+    _gs('event', 'Clicked my list item');
+  });
+  $('button').on('click', function() {
+    console.log('clicked on the button')
     _gs('event', 'Clicked my button');
   });
 });
