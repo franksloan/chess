@@ -2,6 +2,7 @@ $(document).ready(function(){
   var pieceIds = [];
   var targets = [];
   var toSet = false;
+  var analyticsId = 0;
   // var socket = io.connect('http://localhost:5000');
   var socket = io.connect();
   var chatInput = document.getElementById("chat-input");
@@ -145,6 +146,18 @@ $(document).ready(function(){
       var nickname = prompt("What's your name?");
       _gs('event', 'Someone joined', {
         name: nickname
+      });
+      var date = new Date();
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+      var time = date.getHours() + ':' + date.getMinutes();
+      date = day + '/' + month + '/' + year;
+      var timestamp = date + ' - ' + time;
+      _gs('identify', {
+        id: analyticsId,
+        name: nickname,
+        time: timestamp
       });
       socket.emit('join', nickname);
   });
