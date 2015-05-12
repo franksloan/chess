@@ -2,7 +2,6 @@ $(document).ready(function(){
   var pieceIds = [];
   var targets = [];
   var toSet = false;
-  var analyticsId = 0;
   // var socket = io.connect('http://localhost:5000');
   var socket = io.connect();
   var chatInput = document.getElementById("chat-input");
@@ -148,19 +147,26 @@ $(document).ready(function(){
       _gs('event', 'Someone joined', {
         name: nickname
       });
-      analyticsId++;
+      var analyticsId = Math.round(1000 * Math.random());
       var date = new Date();
       var day = date.getDate();
       var month = date.getMonth() + 1;
       var year = date.getFullYear();
       var time = date.getHours() + ':' + date.getMinutes();
-      date = day + '/' + month + '/' + year;
-      var timestamp = date + ' - ' + time;
-      _gs('identify', {
-        id: analyticsId,
+      date = year + '-' + month + '-' + day;
+      var timestamp = date + ' ' + time;
+      _gs('identify', analyticsId, {
         name: nickname,
-        time: timestamp
+        email: analyticsId + '@dummyemail.com'
       });
+      _gs('properties', analyticsId, {
+        name: nickname,
+        email: analyticsId + '@dummyemail.com',
+        custom: {
+          online: timestamp;
+        }
+      });
+
       socket.emit('join', nickname);
   });
   ///////////
@@ -183,6 +189,17 @@ $(document).ready(function(){
   });
   socket.on('messages', function(name, message){
     appendToList(name + ': ' + message, 'message-list');
+    //analytics
+    _gs('event', 'User chatting', {
+        name: name
+    });
+    _gs('properties', analyticsId, {
+        name: name,
+        custom: {
+          chat: message
+        }
+    });
+    //
     updateScroll('message-cont');
   });
   //receive a request for a game
