@@ -160,7 +160,7 @@ $(document).ready(function(){
         name: nickname,
         email: userEmail
       });
-      _gs('properties', analyticsId, {
+      _gs('properties', {
         name: nickname,
         email: userEmail,
         custom: {
@@ -194,7 +194,7 @@ $(document).ready(function(){
     _gs('event', 'User chatting', {
         name: name
     });
-    _gs('properties', analyticsId, {
+    _gs('properties', {
         name: name,
         custom: {
           chat: message
