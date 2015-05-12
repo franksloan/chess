@@ -144,9 +144,11 @@ $(document).ready(function(){
   /////////////////////
   socket.on('connect', function(data){
       var nickname = prompt("What's your name?");
+      //analytics
       _gs('event', 'Someone joined', {
         name: nickname
       });
+      analyticsId++;
       var date = new Date();
       var day = date.getDate();
       var month = date.getMonth() + 1;
