@@ -163,7 +163,7 @@ $(document).ready(function(){
         name: nickname,
         email: analyticsId + '@dummyemail.com',
         custom: {
-          online: timestamp;
+          online: timestamp
         }
       });
 
