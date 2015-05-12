@@ -155,13 +155,14 @@ $(document).ready(function(){
       var time = date.getHours() + ':' + date.getMinutes();
       date = year + '-' + month + '-' + day;
       var timestamp = date + ' ' + time;
+      var userEmail = analyticsId + '@dummyemail.com';
       _gs('identify', analyticsId, {
         name: nickname,
-        email: analyticsId + '@dummyemail.com'
+        email: userEmail
       });
       _gs('properties', analyticsId, {
         name: nickname,
-        email: analyticsId + '@dummyemail.com',
+        email: userEmail,
         custom: {
           online: timestamp
         }
