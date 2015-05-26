@@ -24,18 +24,22 @@ function Board(width, height) {
       this.height = height;
       this.space = new Array(width * height);
 }
+//Check what piece is at a position on the board
 Board.prototype.isInside = function(vector) {
       return vector.x > 0 && vector.x < this.width - 1 &&
             vector.y > 0 && vector.y < this.height - 1;
 };
+//Look at what is in a position on the board
 Board.prototype.get = function(vector) {
       return this.space[vector.x + this.width * vector.y];
 };
+//Set a position on the board to be a certain piece
 Board.prototype.set = function(vector, value) {
       this.space[vector.x + this.width * vector.y] = value;
 };
 //
 
+//get the piece represented by each letter
 function elementFromChar(legend, chr) {
       if (chr == " "){
             return null;
@@ -44,7 +48,7 @@ function elementFromChar(legend, chr) {
       element.originChar = chr;
       return element;
 }
-
+//get the letter representing the piece element
 function charFromElement(element) {
       if (element === null){
             return " ";
@@ -53,11 +57,15 @@ function charFromElement(element) {
       }
 }
 
+//main constructor to create a match
+//it takes in one parameter which is the layout of the current board
+//in most cases, on initialisation this will be the standard chess board setup
 function Match(layout){
       var chessboard = new Board(layout[0].length, layout.length);
       var legend = {"-": Edge, "P": Pawn, "H": Knight, "C": Castle, 
             "B": Bishop, "Q": Queen, "K": King};
       this.chessboard = chessboard;
+	  //create two players and state where the kings are positioned
       this.player1 = new Player(true, new Vector(5,1));
       this.player2 = new Player(false, new Vector(5,8));
       this.player1.setup(1);
@@ -74,6 +82,7 @@ function Match(layout){
             }
       });
 }
+//method to show visual chess board if playing in javascript console
 Match.prototype.toString = function() {
       var output = "\n";
       for(var y = 0; y < this.chessboard.height; y++) {
@@ -85,19 +94,25 @@ Match.prototype.toString = function() {
       }
       return output;
 };
+//method to find if a player is still in 'check'
 Match.prototype.moveOutOfCheck = function(start,dest,startObj,destObj,self) {
       var stillInCheck = false;
       if(this.playerTurn.check){
             for ( var i = 0; i < this.otherPlayer.piecePositions.length; i++) {
+				  //get the piece in each of the opposing player's positions
                   var checkStart = this.otherPlayer.piecePositions[i];
                   var checkObj = this.chessboard.get(checkStart);
+				  //if the opposing piece can move from it's position to 
+				  //current player's king position then king is in check
                   if(checkObj.move(checkStart, this.playerTurn.kingPosition, self, new King(), this.player2.go)){
+						//revert positions as king is not out of check so player must attempt another move
                         this.chessboard.set(start, startObj);
                         this.chessboard.set(dest, destObj);
                         this.playerTurn.changePosition(dest,start);
                         if(destObj !== null){
                               this.otherPlayer.changePosition(null, dest);
                         }
+						//reset the king's position
                         if(startObj.originChar === 'K'){
                               this.playerTurn.kingPosition = start;
                         }
@@ -106,6 +121,7 @@ Match.prototype.moveOutOfCheck = function(start,dest,startObj,destObj,self) {
                   }
             }     
       }
+	  //if this point is reached then player is no longer in check
       return stillInCheck;
 };
 Match.prototype.putOpponentInCheck = function(self) {
@@ -118,12 +134,19 @@ Match.prototype.putOpponentInCheck = function(self) {
             }
       }
 };
+//method to switch whose turn it is
+//accepts no arguments
 Match.prototype.changePlayer = function() {
       this.playerTurn = this.player1.go ? this.player2 : this.player1;
       this.otherPlayer = this.player2.go ? this.player2 : this.player1;
       this.player1.go = !this.player1.go;
       this.player2.go = !this.player2.go;
 };
+//accepts: start position on board
+//		   destination position on board
+//		   the piece at start position
+//		   the piece at destination position
+//		   'this' keyword is passed in as 'self'
 Match.prototype.startMove = function(start,dest,startObj,destObj,self) {
       console.log('moving');
       this.chessboard.set(start, null);
@@ -242,10 +265,16 @@ Piece.prototype.validMove = function(start,dest) {
       }
       return false;      
 };
+//square move which could be used by a queen or a castle takes in
+//the starting position and the destination to move to as well as
+//self which is 'this' referring the the piece itself.
 Piece.prototype.squareMove = function(start,dest,self){
       var move = dest.change(start);
       var i;
+      //looks at whether there is a piece which would block the path that this piece
+      //can move along
       function square(set_i, end, x_pos, y_pos) {
+            //i is actually passed in but set_i is in for construct for clarity
             for (set_i; i < end; i++) {
                   var x = x_pos || i;
                   var y = y_pos || i;
@@ -256,7 +285,10 @@ Piece.prototype.squareMove = function(start,dest,self){
             }
             return true;
       }
+      //moving on x-coordinate only
       if ((move.x !== 0 && move.y === 0)) {
+            //Only one call to square will do anything as the other will start
+            //with i > end
             if(square(i = start.x + 1, dest.x, null, start.y) &&
                   square(i = dest.x + 1, start.x, null, start.y)) {
                   return true;
@@ -264,6 +296,7 @@ Piece.prototype.squareMove = function(start,dest,self){
                   return false;
             }
       }
+      //moving on xy-coordinate only
       if ((move.x === 0 && move.y !== 0)) {
             if(square(i = start.y + 1, dest.y, start.x, null) &&
                   square(i = dest.y + 1, start.y, start.x, null)) {
